@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Image from "next/image";
-import { Trash2, Calendar } from "lucide-react";
+import { Trash2, Calendar, Download } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import {
@@ -142,7 +142,7 @@ export function ImageGrid({ images }: ImageGridProps) {
                 open={selectedImage !== null && !deleteDialogOpen}
                 onOpenChange={(open) => !open && setSelectedImage(null)}
             >
-                <DialogContent className="max-w-3xl">
+                <DialogContent className="max-w-3xl w-full h-[80vh] flex flex-col">
                     {selectedImage && (
                         <>
                             <DialogHeader>
@@ -151,7 +151,7 @@ export function ImageGrid({ images }: ImageGridProps) {
                                     Uploaded on {formatDate(selectedImage.created_at)}
                                 </DialogDescription>
                             </DialogHeader>
-                            <div className="relative w-full aspect-square">
+                            <div className="relative flex-1 min-h-0 w-full bg-slate-950/50 rounded-md overflow-hidden">
                                 <Image
                                     src={selectedImage.image_url}
                                     alt="Preview"
@@ -159,6 +159,34 @@ export function ImageGrid({ images }: ImageGridProps) {
                                     className="object-contain"
                                 />
                             </div>
+                            <DialogFooter className="mt-4 sm:justify-between gap-2">
+                                <Button
+                                    variant="secondary"
+                                    onClick={async () => {
+                                        try {
+                                            toast.info("Downloading...");
+                                            const response = await fetch(selectedImage.image_url);
+                                            const blob = await response.blob();
+                                            const url = window.URL.createObjectURL(blob);
+                                            const a = document.createElement("a");
+                                            a.href = url;
+                                            a.download = `anonsnap-${selectedImage.id.slice(0, 8)}.jpg`;
+                                            document.body.appendChild(a);
+                                            a.click();
+                                            window.URL.revokeObjectURL(url);
+                                            document.body.removeChild(a);
+                                            toast.success("Download started");
+                                        } catch (error) {
+                                            console.error("Download error:", error);
+                                            toast.error("Download failed, opening in new tab");
+                                            window.open(selectedImage.image_url, "_blank");
+                                        }
+                                    }}
+                                >
+                                    <Download className="h-4 w-4 mr-2" />
+                                    Download Image
+                                </Button>
+                            </DialogFooter>
                         </>
                     )}
                 </DialogContent>
