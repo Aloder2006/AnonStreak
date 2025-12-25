@@ -43,7 +43,7 @@ export function PublicGallery({ initialImages }: PublicGalleryProps) {
                 </p>
             </div>
 
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 px-4">
+            <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4 px-4 w-full">
                 {initialImages.map((image) => (
                     <Card
                         key={image.id}
@@ -74,7 +74,7 @@ export function PublicGallery({ initialImages }: PublicGalleryProps) {
             <Dialog open={!!selectedImage} onOpenChange={() => setSelectedImage(null)}>
                 <DialogContent className="max-w-2xl bg-slate-950 border-slate-800 text-slate-200">
                     <DialogHeader>
-                        <DialogTitle>Public Snap</DialogTitle>
+                        <DialogTitle>Public Streak</DialogTitle>
                         <DialogDescription>
                             {selectedImage && formatDate(selectedImage.created_at)}
                         </DialogDescription>
