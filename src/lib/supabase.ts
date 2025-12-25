@@ -27,4 +27,5 @@ export interface Message {
     cloudinary_public_id: string;
     image_url: string;
     created_at: string;
+    is_public: boolean;
 }

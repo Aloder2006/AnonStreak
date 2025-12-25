@@ -225,3 +225,53 @@ export async function getVisitorCount() {
         };
     }
 }
+
+/**
+ * Toggle public status of an image (admin only)
+ */
+export async function togglePublicStatus(id: string, isPublic: boolean) {
+    try {
+        const { data, error } = await supabaseAdmin
+            .from("messages")
+            .update({ is_public: isPublic })
+            .eq("id", id)
+            .select()
+            .single();
+
+        if (error) {
+            console.error("Error toggling public status:", error);
+            return { success: false, error: "Failed to update status" };
+        }
+
+        revalidatePath("/admin/dashboard");
+        revalidatePath("/"); // Revalidate home page as well
+
+        return { success: true, data };
+    } catch (error) {
+        console.error("Error toggling public status:", error);
+        return { success: false, error: "An error occurred" };
+    }
+}
+
+/**
+ * Get public images for the wall
+ */
+export async function getPublicImages() {
+    try {
+        const { data, error } = await supabase
+            .from("messages")
+            .select("*")
+            .eq("is_public", true)
+            .order("created_at", { ascending: false });
+
+        if (error) {
+            console.error("Error fetching public images:", error);
+            return { success: false, data: [] };
+        }
+
+        return { success: true, data: data || [] };
+    } catch (error) {
+        console.error("Error fetching public images:", error);
+        return { success: false, data: [] };
+    }
+}

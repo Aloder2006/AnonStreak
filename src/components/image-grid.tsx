@@ -12,8 +12,18 @@ import {
     DialogFooter,
     DialogHeader,
     DialogTitle,
+import { Trash2, Calendar, Download, Eye, EyeOff } from "lucide-react";
+import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
 } from "@/components/ui/dialog";
-import { deleteImage } from "@/app/actions";
+import { deleteImage, togglePublicStatus } from "@/app/actions";
 import { toast } from "sonner";
 import type { Message } from "@/lib/supabase";
 
@@ -26,7 +36,32 @@ export function ImageGrid({ images }: ImageGridProps) {
     const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
     const [isDeleting, setIsDeleting] = useState(false);
 
+    const [isUpdating, setIsUpdating] = useState(false);
+
+    const handleTogglePublic = async () => {
+        if (!selectedImage) return;
+        setIsUpdating(true);
+        try {
+            const newStatus = !selectedImage.is_public;
+            const result = await togglePublicStatus(selectedImage.id, newStatus);
+
+            if (result.success) {
+                toast.success(newStatus ? "Image published to wall" : "Image removed from wall");
+                // Update local state
+                setSelectedImage({ ...selectedImage, is_public: newStatus });
+            } else {
+                toast.error("Failed to update status");
+            }
+        } catch (error) {
+            console.error("Update error:", error);
+            toast.error("An error occurred");
+        } finally {
+            setIsUpdating(false);
+        }
+    };
+
     const handleDelete = async () => {
+
         if (!selectedImage) return;
 
         setIsDeleting(true);
@@ -85,9 +120,17 @@ export function ImageGrid({ images }: ImageGridProps) {
                                 />
                             </div>
                             <div className="p-3 bg-card">
-                                <div className="flex items-center text-xs text-muted-foreground">
-                                    <Calendar className="h-3 w-3 mr-1" />
-                                    {formatDate(image.created_at)}
+                                <div className="flex items-center justify-between">
+                                    <div className="flex items-center text-xs text-muted-foreground">
+                                        <Calendar className="h-3 w-3 mr-1" />
+                                        {formatDate(image.created_at)}
+                                    </div>
+                                    {image.is_public && (
+                                        <span className="flex items-center text-[10px] font-medium text-green-500 bg-green-500/10 px-1.5 py-0.5 rounded border border-green-500/20">
+                                            <Eye className="h-3 w-3 mr-1" />
+                                            Public
+                                        </span>
+                                    )}
                                 </div>
                             </div>
                         </CardContent>
@@ -154,32 +197,52 @@ export function ImageGrid({ images }: ImageGridProps) {
                                     Delete
                                 </Button>
 
-                                <Button
-                                    variant="secondary"
-                                    onClick={async () => {
-                                        try {
-                                            toast.info("Downloading...");
-                                            const response = await fetch(selectedImage.image_url);
-                                            const blob = await response.blob();
-                                            const url = window.URL.createObjectURL(blob);
-                                            const a = document.createElement("a");
-                                            a.href = url;
-                                            a.download = `anonsnap-${selectedImage.id.slice(0, 8)}.jpg`;
-                                            document.body.appendChild(a);
-                                            a.click();
-                                            window.URL.revokeObjectURL(url);
-                                            document.body.removeChild(a);
-                                            toast.success("Download started");
-                                        } catch (error) {
-                                            console.error("Download error:", error);
-                                            toast.error("Download failed, opening in new tab");
-                                            window.open(selectedImage.image_url, "_blank");
-                                        }
-                                    }}
-                                >
-                                    <Download className="h-4 w-4 mr-2" />
-                                    Download Image
-                                </Button>
+                                <div className="flex items-center gap-2">
+                                    <Button
+                                        variant="outline"
+                                        onClick={handleTogglePublic}
+                                        disabled={isUpdating}
+                                    >
+                                        {selectedImage.is_public ? (
+                                            <>
+                                                <EyeOff className="h-4 w-4 mr-2" />
+                                                Unpublish
+                                            </>
+                                        ) : (
+                                            <>
+                                                <Eye className="h-4 w-4 mr-2" />
+                                                Publish
+                                            </>
+                                        )}
+                                    </Button>
+
+                                    <Button
+                                        variant="secondary"
+                                        onClick={async () => {
+                                            try {
+                                                toast.info("Downloading...");
+                                                const response = await fetch(selectedImage.image_url);
+                                                const blob = await response.blob();
+                                                const url = window.URL.createObjectURL(blob);
+                                                const a = document.createElement("a");
+                                                a.href = url;
+                                                a.download = `anonsnap-${selectedImage.id.slice(0, 8)}.jpg`;
+                                                document.body.appendChild(a);
+                                                a.click();
+                                                window.URL.revokeObjectURL(url);
+                                                document.body.removeChild(a);
+                                                toast.success("Download started");
+                                            } catch (error) {
+                                                console.error("Download error:", error);
+                                                toast.error("Download failed, opening in new tab");
+                                                window.open(selectedImage.image_url, "_blank");
+                                            }
+                                        }}
+                                    >
+                                        <Download className="h-4 w-4 mr-2" />
+                                        Download Image
+                                    </Button>
+                                </div>
                             </DialogFooter>
                         </>
                     )}
