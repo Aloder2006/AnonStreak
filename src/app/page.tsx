@@ -13,70 +13,51 @@ export default async function HomePage() {
     const publicImages = result.success ? result.data : [];
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-zinc-950 via-slate-950 to-zinc-950 relative overflow-y-auto overflow-x-hidden scroll-smooth">
-            {/* GIF Background - Fixed Position */}
-            <div className="fixed inset-0 opacity-80 z-0">
-                <img
-                    src="https://res.cloudinary.com/dj5c8iuxx/image/upload/v1766644428/facb6eamqvgbdwefe8wj.gif"
-                    alt="Background"
-                    className="w-full h-full object-cover"
-                />
+        <div className="min-h-screen bg-zinc-950 relative overflow-y-auto overflow-x-hidden selection:bg-zinc-800 selection:text-zinc-200">
 
-                {/* Darker muted gradient overlay */}
-                <div className="absolute inset-0 bg-gradient-to-br from-zinc-900/70 via-slate-900/60 to-zinc-900/70" />
+            {/* Subtle Geometric Background */}
+            <div className="fixed inset-0 z-0">
+                <div className="absolute inset-0 bg-[linear-gradient(to_right,#8080800a_1px,transparent_1px),linear-gradient(to_bottom,#8080800a_1px,transparent_1px)] bg-[size:4rem_4rem]"></div>
+                <div className="absolute inset-0 bg-radial-gradient from-transparent to-zinc-950/80" />
             </div>
-
-            {/* Noise texture overlay */}
-            <div
-                className="fixed inset-0 opacity-[0.08] mix-blend-overlay pointer-events-none z-[1]"
-                style={{
-                    backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`,
-                    backgroundRepeat: 'repeat',
-                }}
-            />
-
-            {/* Dark overlay */}
-            <div className="fixed inset-0 bg-black/40 z-[2]" />
 
             {/* Content Container */}
             <div className="relative z-10 w-full">
 
-                {/* Hero Section - Full Screen */}
-                <div className="min-h-screen flex flex-col items-center justify-center relative px-4">
-                    <div className="w-full max-w-lg text-center mb-8">
-                        <h1 className="text-5xl md:text-6xl font-bold mb-3 bg-gradient-to-r from-slate-400 to-slate-500 bg-clip-text text-transparent tracking-tight">
-                            AnonStreak
+                {/* Hero Section - Full Screen & Symmetrical */}
+                <div className="min-h-screen flex flex-col items-center justify-center relative px-6">
+
+                    {/* Minimalist Logo/Title */}
+                    <div className="w-full max-w-2xl text-center mb-16 space-y-6">
+                        <div className="inline-block px-3 py-1 mb-4 border border-zinc-800 rounded-full">
+                            <span className="text-[10px] font-medium tracking-[0.2em] text-zinc-500 uppercase">
+                                Anonymous Sharing
+                            </span>
+                        </div>
+                        <h1 className="text-4xl md:text-6xl font-light text-zinc-100 tracking-tight">
+                            Anon<span className="font-medium">Streak</span>
                         </h1>
+                        <p className="text-zinc-500 text-sm md:text-base max-w-sm mx-auto font-light leading-relaxed">
+                            Share moments in silence. Clean, secure, and ephemeral.
+                        </p>
                     </div>
 
-                    {/* Upload Zone */}
-                    <div className="w-full max-w-lg">
+                    {/* Upload Zone - Elegant Container */}
+                    <div className="w-full max-w-md">
                         <UploadZone />
                     </div>
 
-                    {/* Scroll Indicator */}
-                    <div className="absolute bottom-10 flex flex-col items-center gap-2 animate-bounce opacity-70">
-                        <span className="text-sm text-slate-400 font-medium tracking-widest uppercase">The Wall</span>
-                        <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            width="24"
-                            height="24"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            strokeWidth="2"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            className="text-slate-400"
-                        >
-                            <path d="M12 5v14" />
-                            <path d="m19 12-7 7-7-7" />
-                        </svg>
+                    {/* Refined Scroll Indicator */}
+                    <div className="absolute bottom-12 flex flex-col items-center gap-4 opacity-50 hover:opacity-100 transition-opacity duration-500">
+                        <div className="h-12 w-px bg-gradient-to-b from-zinc-800 to-zinc-500"></div>
+                        <span className="text-[10px] text-zinc-500 tracking-[0.3em] uppercase transform rotate-90 translate-y-8 origin-top">
+                            The Wall
+                        </span>
                     </div>
                 </div>
 
                 {/* Public Gallery Section */}
-                <div className="min-h-screen flex flex-col items-center py-20 px-4 bg-black/20 backdrop-blur-sm">
+                <div className="min-h-screen bg-black flex flex-col items-center py-32 px-4 border-t border-zinc-900">
                     <PublicGallery initialImages={publicImages} />
                 </div>
             </div>
