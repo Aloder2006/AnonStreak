@@ -76,27 +76,13 @@ export function ImageGrid({ images }: ImageGridProps) {
                 {images.map((image) => (
                     <Card key={image.id} className="overflow-hidden group">
                         <CardContent className="p-0">
-                            <div className="relative aspect-square">
+                            <div className="relative aspect-square cursor-pointer hover:opacity-90 transition-opacity" onClick={() => setSelectedImage(image)}>
                                 <Image
                                     src={image.image_url}
                                     alt="Uploaded image"
                                     fill
-                                    className="object-cover cursor-pointer hover:opacity-90 transition-opacity"
-                                    onClick={() => setSelectedImage(image)}
+                                    className="object-cover"
                                 />
-                                <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                                    <Button
-                                        variant="destructive"
-                                        size="icon"
-                                        onClick={(e) => {
-                                            e.stopPropagation();
-                                            setSelectedImage(image);
-                                            setDeleteDialogOpen(true);
-                                        }}
-                                    >
-                                        <Trash2 className="h-4 w-4" />
-                                    </Button>
-                                </div>
                             </div>
                             <div className="p-3 bg-card">
                                 <div className="flex items-center text-xs text-muted-foreground">
@@ -159,7 +145,15 @@ export function ImageGrid({ images }: ImageGridProps) {
                                     className="object-contain"
                                 />
                             </div>
-                            <DialogFooter className="mt-4 sm:justify-between gap-2">
+                            <DialogFooter className="mt-4 flex flex-row items-center justify-between gap-2">
+                                <Button
+                                    variant="destructive"
+                                    onClick={() => setDeleteDialogOpen(true)}
+                                >
+                                    <Trash2 className="h-4 w-4 mr-2" />
+                                    Delete
+                                </Button>
+
                                 <Button
                                     variant="secondary"
                                     onClick={async () => {
