@@ -30,7 +30,7 @@ export function PublicGallery({ initialImages }: PublicGalleryProps) {
         <div className="w-full max-w-5xl mt-24">
             <div className="text-center mb-16 space-y-2">
                 <h2 className="text-xl font-medium tracking-widest text-slate-200 uppercase">
-                    The Collection
+                    Your Streak
                 </h2>
                 <div className="h-px w-12 bg-slate-800 mx-auto" />
             </div>
