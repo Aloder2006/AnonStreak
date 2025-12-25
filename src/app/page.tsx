@@ -1,6 +1,8 @@
 import { UploadZone } from "@/components/upload-zone";
 import { trackVisitor } from "./actions";
 
+export const dynamic = "force-dynamic";
+
 export default async function HomePage() {
     // Track visitor
     await trackVisitor();

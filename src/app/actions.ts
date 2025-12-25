@@ -190,7 +190,7 @@ export async function trackVisitor() {
 
         return { success: true, data };
     } catch (error) {
-        console.error("Error tracking visitor:", error);
+        console.error("Error tracking visitor:", JSON.stringify(error, null, 2));
         return { success: false };
     }
 }
